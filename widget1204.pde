@@ -24,6 +24,11 @@ boolean isDots1Active = true;  // true: dots1, false: dots2
 PImage safeImage;  // 안전 상황 이미지
 PImage riskImage;  // 위험 상황 이미지
 
+// 혈당위젯 안전/위험 상황
+boolean isSugar = false;
+PImage bloodsugar_safe;  //안전 혈당 이미지
+PImage bloodsugar_danger;  //위험 혈당 이미지
+
 void setup() {
   size(402, 874);
   
@@ -38,17 +43,26 @@ void setup() {
      .setImage(safeImage)  // 기본 이미지 설정
      .updateSize();
   
+  dots1 = loadImage("인디케이터1면.png");
+  dots2 = loadImage("인디케이터2면.png");
   // dots 버튼 (클릭시 이미지 변경)
   cp5.addButton("dotsBtn")
      .setPosition(377, 154)
      .setImage(dots1)  // 기본 dots1 이미지
      .updateSize();
+     
+  bloodsugar_safe = loadImage("혈당안전.png");
+  bloodsugar_danger = loadImage("혈당위험.png");
+  cp5.addButton("sugarBtn")
+     .setPosition(34, 482)
+     .setImage(bloodsugar_safe)  // 기본이미지(혈당안전)설정
+     .updateSize();
   
   iphonebgimg = loadImage("Wallpaper.png");
   campingwg = loadImage("캠핑위젯.png");
   w1_food = loadImage("식단 위젯.png");  // 식단 이미지 로드
-  dots1 = loadImage("인디케이터1면.png");
-  dots2 = loadImage("인디케이터2면.png");
+  
+  
 }
 
 void draw() {
@@ -66,7 +80,7 @@ void draw() {
   
   // 위젯 이미지 그리기
   image(campingwg, 34, 580);  // 위젯5 캠핑 위치
-
+  //image(bloodsugar_safe,34,482);
   
   // dots 버튼 이미지 (현재 dots1 또는 dots2)
   cp5.getController("dotsBtn").setImage(isDots1Active ? dots1 : dots2);
@@ -74,6 +88,7 @@ void draw() {
   // 버튼 위치 업데이트
   cp5.getController("playBtn").setPosition(34, 88 + pos);
   cp5.getController("dotsBtn").setPosition(377, 154 + pos);
+  cp5.getController("sugarBtn").setPosition(34, 482 + pos);
   
   popMatrix();
 }
@@ -108,7 +123,7 @@ public void dotsBtn() {
   cp5.getController("dotsBtn").setImage(isDots1Active ? dots1 : dots2);
 }
 
-// 당그래프 클릭시 이미지 교체
+// 식단1면 클릭시 위험 상태로 전환
 public void playBtn() {
   println("위젯1 클릭");
   
@@ -119,5 +134,18 @@ public void playBtn() {
     cp5.getController("playBtn").setImage(riskImage);  // 위험 상황 이미지로 변경
   } else {
     cp5.getController("playBtn").setImage(safeImage);  // 안전 상황 이미지로 변경
+  }
+}
+
+public void sugarBtn() {
+  println("혈당위젯 클릭");
+  
+  isSugar = !isSugar;  // 상태 전환
+  
+  // 위험 또는 안전 이미지로 설정
+  if (isSugar) {
+    cp5.getController("sugarBtn").setImage(bloodsugar_danger);  // 위험 상황 이미지로 변경
+  } else {
+    cp5.getController("sugarBtn").setImage(bloodsugar_safe);  // 안전 상황 이미지로 변경
   }
 }
